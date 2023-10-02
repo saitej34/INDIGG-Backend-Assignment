@@ -7,6 +7,8 @@ Resume Link : https://docs.google.com/document/d/1Tvqc-qmx2SL_e4guKVps4GP0GsCUZP
 
 Let's explore all the APIs and their their request body formats and response formats, their name and and their endpoint names to which the call need to be made.
 
+<img src="https://drive.google.com/file/d/1VBMz_TG40l5rVRdnkSymDZy0SfXKB-0S/view?usp=sharing" width="128"/>
+
 Steps to start the project : 
 
  - Clone the repository 
