@@ -12,7 +12,9 @@ Steps to start the project :
 uvicorn main:app
 ```
 
-`All the apis where {user_token} is necessary need to generate the token by logging the user will get get an JWT token valid to 300 Minutes `
+`All the apis where {user_token} is necessary need to generate the token by logging the user will get get an JWT token valid to 300 Minutes  by calling 127.0.0.1:8000/api/auth/user with request body with email and password of user that you have registered with 127.0.0.1:8000/api/user`
+
+
 
 # API to Register the user
 ```sh
