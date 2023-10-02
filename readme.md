@@ -66,6 +66,169 @@ This api is used to register the user
 }
 
 
+----------------------------------------------------
+
+
+# API to Add Book to the Database
+```sh
+127.0.0.1:8000/api/admin/addBooks
+```
+This api is used to add Books to the Database
+
+> Demo Request Body
+{
+        "isbn":"qwertyuiopkjhgfdsxcvbn",
+        "title":"Book B",
+        "author":"mani kandan",
+        "publishedYear":2005,
+        "quantity":"158",
+        "genre":"Adventure Motivating"
+}
+
+ >Demo Response by API
+{
+  "message": "Book added successfully",
+  "Book_id": "651a72468fde2b39a9adfe17"
+}
+
+
+----------------------------------------------------------------------------------------
+
+
+# API TO GET ALL THE BOOKS DETAILS
+
+```sh
+http://127.0.0.1:8000/api/admin/getAllBooks
+```
+This api is used to add Books to the Database
+
+> Demo Request Body
+No Body Required
+
+ > Demo Response by API
+{
+  "status": "Books Found",
+  "data": [
+    {
+      "_id": "65193c71081d724bb33bb43d",
+      "isbn": "qwertyj741242",
+      "title": "Book of world",
+      "author": "ertyuilkbvcvb",
+      "publishedYear": 2003,
+      "quantity": 200,
+      "genre": "Engineering",
+      "createdAt": "2023-10-01 15:01:29.719648"
+    },
+    {
+      "_id": "651a72468fde2b39a9adfe17",
+      "isbn": "qwertyuiopkjhgfdsxcvbn",
+      "title": "Book A",
+      "author": "saiteja",
+      "publishedYear": 2005,
+      "quantity": "150",
+      "genre": "Adventure Motivasting",
+      "createdAt": "2023-10-02 13:03:26.451419"
+    }
+  ]
+}
+
+
+# API TO GET SPECIFIC BOOK DETAILS 
+
+```sh
+http://127.0.0.1:8000/api/admin/getBook/{book_isbn}
+```
+book_isbn is ISBN of the  book
+
+ > Demo Request : http://127.0.0.1:8000/api/admin/getBook/qwertyj741242
+
+ > Demo Response
+ {
+  "status": "Book Found",
+  "data": {
+    "isbn": "qwertyj741242",
+    "title": "Book of world",
+    "author": "ertyuilkbvcvb",
+    "publishedYear": 2003,
+    "quantity": 200,
+    "genre": "Engineering",
+    "createdAt": "2023-10-01 15:01:29.719648"
+  }
+}
+
+
+---------------------------------------------------------------------------------------------
+
+# API TO UPDATE THE BOOK DATA BASED ON ISBN 
+
+``` sh
+http://127.0.0.1:8000/api/admin/updateBookData/{isbn}
+```
+ > Request demo url : 
+Example :  I am trying to update the Name of Book 
+ http://127.0.0.1:8000/api/admin/updateBookData/qwertyj741242
+ Request Body : 
+{
+  "name":"Book of India"
+}
+Response :
+{
+  "status": "Book updated successfully"
+}
+
+
+-------------------------------------------------------------------------
+
+# API TO DELETE A BOOK 
+
+``` sh
+http://127.0.0.1:8000/api/admin/deleteBook/{isbn}
+```
+
+ > Demo Request : 
+ http://127.0.0.1:8000/api/admin/deleteBook/qwertyj741242
+Response : 
+
+{
+  "status": "Book updated successfully"
+}
+
+
+--------------------------------------------------------
+
+# API TO SEARCH FOR A BOOK BASED ON  title,author name,isbn number,genre
+
+``` sh 
+http://127.0.0.1:8000/api/books/search/{query}
+```
+
+ => query can be title/name of the book,author of the book,isbn of the book,genre of the book 
+ => genre is an string with multiple genres as items in string called genre.
+ Example : genre : "Adevnture Realistic Imaginary"
+
+ > Request demo : http://127.0.0.1:8000/api/books/search/Adventure
+ 
+ > Response : 
+ {
+  "status": "Books found",
+  "data": [
+    {
+      "_id": "651a72468fde2b39a9adfe17",
+      "isbn": "qwertyuiopkjhgfdsxcvbn",
+      "title": "Book A",
+      "author": "saiteja",
+      "publishedYear": 2005,
+      "quantity": "150",
+      "genre": "Adventure Motivasting",
+      "createdAt": "2023-10-02 13:03:26.451419"
+    }
+  ]
+}
+
+
+
+
+
 
 
 
