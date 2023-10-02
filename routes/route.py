@@ -312,11 +312,11 @@ def getRecommendationBasedOnGenrendAuthor(user_token : str):
     emailf = user_email["sub"]
     user1 = users.find_one({"email": emailf})
     user1['_id'] = str(user1['_id'])
-    books = user1["booksHistory"]
+    userbooks = user1["booksHistory"]
     bookslist = list(books.find())
     finalbooks = [{**book, "_id": str(book["_id"])} for book in bookslist]
     genres=list()
-    for book in books:
+    for book in userbooks:
         print(type(book))
         genres.append(book["genre"])
     filtered_books = [book for book in finalbooks if book["genre"] in genres]
