@@ -274,8 +274,11 @@ In the schema we are storing the every book a user takes in his collection users
 from which we will get the genre,author the user is interested in taking and using this genre/author will recommend the the specific genre/author books to user.
 
  > Demo Request : http://127.0.0.1:8000/api/recommend/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZW1haWxAZ21haWwuY29tIiwiZXhwIjoxNjk2MjUzOTIwfQ.W2vHXx8NSNZnsK8AreF1_3t4bMmTska08BQpbx46Z1w
+
+----
+
  > Demo Response : We will get an array of books
-> {
+ {
   "status": "Recommendation Successfull",
   "Books": [
     {
