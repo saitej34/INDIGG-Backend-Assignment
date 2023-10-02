@@ -248,6 +248,7 @@ async def borrowBook(user_token: str, book_isbn: str):
                 "isbn": book1["isbn"],
                 "title": book1["title"],
                 "author": book1["author"],
+                "genre": book1["genre"],
                 "borrowed_date": str(datetime.now()),
                 "return_date": str(datetime.now() + timedelta(days=20))
             }
@@ -264,7 +265,7 @@ async def borrowBook(user_token: str, book_isbn: str):
 
 
 @lib.post('/api/return/{user_token}/{book_isbn}')
-async def returnBook(user_token: str, book_isbn: str):
+def returnBook(user_token: str, book_isbn: str):
     try:
         user_email = verify_token(user_token)
         emailf = user_email["sub"]
@@ -288,8 +289,8 @@ async def returnBook(user_token: str, book_isbn: str):
         
         if index_to_remove is not None:
             del user1["borrowedBooks"][index_to_remove]
-            await books.update_one({"isbn": book1["isbn"]}, {"$inc": {"quantity": 1}})
-            await users.update_one({"email": user1["email"]}, {"$set": {"borrowedBooks": user1["borrowedBooks"]}})
+            books.update_one({"isbn": book1["isbn"]}, {"$inc": {"quantity": 1}})
+            users.update_one({"email": user1["email"]}, {"$set": {"borrowedBooks": user1["borrowedBooks"]}})
             return {"status": "Transaction Successfull!!!  Book returned successfully"}
         else:
             raise HTTPException(status_code=400, detail="You have not borrowed this book")
@@ -300,4 +301,31 @@ async def returnBook(user_token: str, book_isbn: str):
 
 
 
-   
+###################################        Book Recommendation               #################################### 
+
+
+
+
+@lib.get('/api/recommend/{user_token}')
+def getRecommendationBasedOnGenrendAuthor(user_token : str):
+    user_email = verify_token(user_token)
+    emailf = user_email["sub"]
+    user1 = users.find_one({"email": emailf})
+    user1['_id'] = str(user1['_id'])
+    books = user1["booksHistory"]
+    bookslist = list(books.find())
+    finalbooks = [{**book, "_id": str(book["_id"])} for book in bookslist]
+    genres=list()
+    for book in books:
+        print(type(book))
+        genres.append(book["genre"])
+    filtered_books = [book for book in finalbooks if book["genre"] in genres]
+    if not filtered_books:
+        return {"message": "No Recommendations Found"}
+    return {"status" : "Recommendation Successfull" , "Books" : filtered_books}
+    
+        
+
+
+
+
