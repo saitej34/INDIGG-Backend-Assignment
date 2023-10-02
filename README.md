@@ -45,7 +45,7 @@ This api is used to register the user
 
 ## API to Login the user i.e to authenticate the user with email and password
  
- `Generates JWT Token upon successfull Login which can be valid upto some minutes which we can specify here i have specified 100 Minutes of time so therefore the token is valid only upto 100 Minutes`
+ `Generates JWT Token upon successfull Login which can be valid upto some minutes which we can specify here i have specified 100 Minutes of time so therefore the token is valid only upto 300 Minutes`
  
 ```sh
 127.0.0.1:8000/api/auth/user
@@ -225,7 +225,46 @@ http://127.0.0.1:8000/api/books/search/{query}
   ]
 }
 
+-------------------------------------------------
 
+# API FOR USER TO BORROW THE BOOK FROM LIBRARY 
+
+``` sh 
+http://127.0.0.1:8000/api/borrow/{user_token}/{book_isbn}
+```
+
+This API is called when an user with id want to borrow the book from the library 
+
+Here I have taken the days between borrow and return day be 20 Days i.e if the user borrows a book today he need to return in 20 days
+
+ > Demo Request : http://127.0.0.1:8000/api/borrow/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZW1haWxAZ21haWwuY29tIiwiZXhwIjoxNjk2MjUzOTIwfQ.W2vHXx8NSNZnsK8AreF1_3t4bMmTska08BQpbx46Z1w/qwertyuiopkjhgfdsxcvbn
+Demo Response : {"status" : "Transaction Successfull!!!   Borrow Successfull"}
+
+--------------------------------------------------------------------------------
+
+# API FOR USER TO RETURN THE BOOK FROM LIBRARY
+
+
+``` sh 
+http://127.0.0.1:8000/api/borrow/{user_token}/{book_isbn}
+```
+
+ > Demo Request : http://127.0.0.1:8000/api/return/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZW1haWxAZ21haWwuY29tIiwiZXhwIjoxNjk2MjUzOTIwfQ.W2vHXx8NSNZnsK8AreF1_3t4bMmTska08BQpbx46Z1w/qwertyuiopkjhgfdsxcvbn
+ Demo Response : 
+ {"status": "Transaction Successfull!!!  Book returned successfully"}
+ 
+ 
+ ----------------------------------------------------------------------------
+ 
+ 
+#  API TO GET RECOMMENDATIONS FOR A USER BASED ON HIS HISTORY 
+
+In the schema we are storing the every book a user takes in his collection users as an array of booksHistory
+from which we will get the genre,author the user is interested in taking and using this genre/author will recommend the the specific genre/author books to user.
+
+ > Demo Request : http://127.0.0.1:8000/api/recommend/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZW1haWxAZ21haWwuY29tIiwiZXhwIjoxNjk2MjUzOTIwfQ.W2vHXx8NSNZnsK8AreF1_3t4bMmTska08BQpbx46Z1w
+ >Demo Response : We will get an array of books 
+ 
 
 
 
