@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 
 import jwt
 
-# from lib.passwordfunc import hash_password,verify_password
+
 
 lib = APIRouter()
 
@@ -28,11 +28,20 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=10)  # Token expiration time 
+        expire = datetime.utcnow() + timedelta(minutes=100)  # Token expiration time 
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
+def verify_token(token):
+    try:
+        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return decoded_token
+    except jwt.ExpiredSignatureError:
+        return "Token has expired"
+    except jwt.InvalidTokenError:
+        return "Invalid token"
 
 
 #API FOR REGIATERING AN USER WITH THE DATABASE
@@ -48,8 +57,9 @@ def addUser(user : dict):
         "password":hash_password(user["password"]),
         "cpassword":hash_password(user["cpassword"]),
         "name":user["name"],
-        "createdAt": str(datetime.now())
-
+        "createdAt": str(datetime.now()),
+        "borrowedBooks" : [],
+        "booksHistory" : []
     }
     result = users.insert_one(userReg)
     return {"message": "User added successfully", "user_id": str(result.inserted_id)}
@@ -176,11 +186,118 @@ def deleteBookbasedOnIsbn(isbn:str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal Server Error") from e
+    
+
+
+
+## searching based on title,authorname,isbn number,genre etc
+
+
+
+@lib.get('/api/books/search/{query}')               
+def searchBooks(query: str):
+    try:
+        #regular expression case-insensitive search
+        regex_query = {"$regex": query, "$options": "i"}
+        matched_books = list(books.find({
+            "$or": [
+                {"title": regex_query},
+                {"author": regex_query},
+                {"isbn": regex_query},
+                {"genre" : regex_query}
+            ]
+        }))
+        if not matched_books:
+            raise HTTPException(status_code=404, detail="No matching books found")
+        for book in matched_books:
+            book["_id"] = str(book["_id"])
+        return {"status": "Books found", "data": matched_books}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error") from e
 
 
 
 
 
+############## Borrow Return ########################## 
 
 
 
+@lib.post('/api/borrow/{user_token}/{book_isbn}')
+async def borrowBook(user_token: str, book_isbn: str):
+    try:
+        user_email = verify_token(user_token)
+        emailf =  user_email["sub"] 
+        user1 = users.find_one({"email": emailf})
+        print("User",user1)
+        book1 = books.find_one({"isbn": book_isbn})
+        print("book",book1)
+        if user1 is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        if book1 is None:
+            raise HTTPException(status_code=404, detail="Book not found")
+        user1['_id'] = str(user1['_id'])
+        book1['_id'] = str(book1['_id'])
+        borrowedBooks = len(user1["borrowedBooks"])
+        if(borrowedBooks >= 3):
+            return {"status" : "Your Limit of 3 Books has been completed!!! You can borrow only 3 Books"}
+        if book1["quantity"] > 0:
+            await books.update_one({"isbn": book1["isbn"]}, {"$inc": {"quantity": -1}})
+            book_details = {
+                "isbn": book1["isbn"],
+                "title": book1["title"],
+                "author": book1["author"],
+                "borrowed_date": str(datetime.now()),
+                "return_date": str(datetime.now() + timedelta(days=20))
+            }
+            user1["borrowedBooks"].append(book_details)
+            user1["booksHistory"].append(book_details)
+            await users.update_one({"email": user1["email"]}, {"$set": {"borrowedBooks": user1["borrowedBooks"],"booksHistory":user1["booksHistory"]}})
+        else:
+            raise HTTPException(status_code=400, detail="Book out of stock")
+        
+        return {"status" : "Transaction Successfull!!!   Borrow Successfull"}
+    except:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+
+
+@lib.post('/api/return/{user_token}/{book_isbn}')
+async def returnBook(user_token: str, book_isbn: str):
+    try:
+        user_email = verify_token(user_token)
+        emailf = user_email["sub"]
+        user1 = users.find_one({"email": emailf})
+        print("User", user1)
+        book1 = books.find_one({"isbn": book_isbn})
+        print("Book", book1)
+        if user1 is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        if book1 is None:
+            raise HTTPException(status_code=404, detail="Book not found")
+        
+        user1['_id'] = str(user1['_id'])
+        book1['_id'] = str(book1['_id'])
+
+        index_to_remove = None
+        for i, borrowed_book in enumerate(user1["borrowedBooks"]):
+            if borrowed_book["isbn"] == book1["isbn"]:
+                index_to_remove = i
+                break
+        
+        if index_to_remove is not None:
+            del user1["borrowedBooks"][index_to_remove]
+            await books.update_one({"isbn": book1["isbn"]}, {"$inc": {"quantity": 1}})
+            await users.update_one({"email": user1["email"]}, {"$set": {"borrowedBooks": user1["borrowedBooks"]}})
+            return {"status": "Transaction Successfull!!!  Book returned successfully"}
+        else:
+            raise HTTPException(status_code=400, detail="You have not borrowed this book")
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+
+
+
+   
