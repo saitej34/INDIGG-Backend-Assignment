@@ -28,7 +28,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=100)  # Token expiration time 
+        expire = datetime.utcnow() + timedelta(minutes=300)  # Token expiration time 
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -105,7 +105,7 @@ def authUser(userData : dict):
                 # all credentails are Ok
                 #generating token 
                 access_token = create_access_token({"sub": userData["email"]})
-                return {"status" : "Login Successfull" , "token" : access_token , "expiresIn":"10 Minutes"}
+                return {"status" : "Login Successfull" , "token" : access_token , "expiresIn":"300 Minutes"}
             else:
                 return {"status":"Login Failed due to Incorrect Password" ,"token" : None}
     return {"status":" Login Failed Email ID not Found"}
@@ -225,7 +225,7 @@ def searchBooks(query: str):
 
 
 @lib.post('/api/borrow/{user_token}/{book_isbn}')
-async def borrowBook(user_token: str, book_isbn: str):
+def borrowBook(user_token: str, book_isbn: str):
     try:
         user_email = verify_token(user_token)
         emailf =  user_email["sub"] 
@@ -243,7 +243,6 @@ async def borrowBook(user_token: str, book_isbn: str):
         if(borrowedBooks >= 3):
             return {"status" : "Your Limit of 3 Books has been completed!!! You can borrow only 3 Books"}
         if book1["quantity"] > 0:
-            await books.update_one({"isbn": book1["isbn"]}, {"$inc": {"quantity": -1}})
             book_details = {
                 "isbn": book1["isbn"],
                 "title": book1["title"],
@@ -254,7 +253,8 @@ async def borrowBook(user_token: str, book_isbn: str):
             }
             user1["borrowedBooks"].append(book_details)
             user1["booksHistory"].append(book_details)
-            await users.update_one({"email": user1["email"]}, {"$set": {"borrowedBooks": user1["borrowedBooks"],"booksHistory":user1["booksHistory"]}})
+            books.update_one({"isbn": book1["isbn"]}, {"$inc": {"quantity": -1}})
+            users.update_one({"email": user1["email"]}, {"$set": {"borrowedBooks": user1["borrowedBooks"],"booksHistory":user1["booksHistory"]}})
         else:
             raise HTTPException(status_code=400, detail="Book out of stock")
         
