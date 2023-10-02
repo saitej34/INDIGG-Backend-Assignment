@@ -274,7 +274,52 @@ In the schema we are storing the every book a user takes in his collection users
 from which we will get the genre,author the user is interested in taking and using this genre/author will recommend the the specific genre/author books to user.
 
  > Demo Request : http://127.0.0.1:8000/api/recommend/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZW1haWxAZ21haWwuY29tIiwiZXhwIjoxNjk2MjUzOTIwfQ.W2vHXx8NSNZnsK8AreF1_3t4bMmTska08BQpbx46Z1w
- >Demo Response : We will get an array of books 
+ > Demo Response : We will get an array of books
+> {
+  "status": "Recommendation Successfull",
+  "Books": [
+    {
+      "_id": "651b0cbeeeb42dee36b97f5c",
+      "isbn": "978-0451167712",
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "publishedYear": 1960,
+      "quantity": 125,
+      "genre": "Fiction",
+      "createdAt": "2023-10-03 00:02:30.101986"
+    },
+    {
+      "_id": "651b0cfbeeb42dee36b97f5e",
+      "isbn": "978-0061120084",
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "publishedYear": 2006,
+      "quantity": 55,
+      "genre": "Fiction",
+      "createdAt": "2023-10-03 00:03:31.763220"
+    },
+    {
+      "_id": "651b0d22eeb42dee36b97f5f",
+      "isbn": "978-1400078776",
+      "title": "The Kite Runner",
+      "author": "Khaled Hosseini",
+      "publishedYear": 2003,
+      "quantity": 199,
+      "genre": "Fiction",
+      "createdAt": "2023-10-03 00:04:10.967504"
+    },
+    {
+      "_id": "651b0dffeeb42dee36b97f61",
+      "isbn": "978-0451524935",
+      "title": "Pride and Prejudice",
+      "author": "Jane Austen",
+      "publishedYear": 1813,
+      "quantity": 159,
+      "genre": "Classic",
+      "createdAt": "2023-10-03 00:07:51.539407"
+    }
+  ]
+}
  
 
 
