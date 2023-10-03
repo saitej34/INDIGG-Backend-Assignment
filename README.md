@@ -11,6 +11,11 @@ Get Access to this By ``` http://localhost:8000/docs ```
 
 <img src="https://github.com/saitej34/INDIGG-Backend-Assignment/blob/main/APIS%20lIST.png" width="1000"/>
 
+
+# Schema of Database 
+
+<img src="https://github.com/saitej34/INDIGG-Backend-Assignment/blob/main/Schema.png" width="1000"/>
+
 Steps to start the project : 
 
  - Clone the repository 
