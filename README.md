@@ -61,7 +61,7 @@ This api is used to register the user
 
 ## API to Login the user i.e to authenticate the user with email and password
  
- `Generates JWT Token upon successfull Login which can be valid upto some minutes which we can specify here i have specified 100 Minutes of time so therefore the token is valid only upto 300 Minutes`
+ `Generates JWT Token upon successfull Login which can be valid upto some minutes which we can specify this in code access_token function  here i have specified 300 Minutes of time so therefore the token is valid only upto 300 Minutes ( 5 Hours )`
  
 ```sh
 127.0.0.1:8000/api/auth/user
